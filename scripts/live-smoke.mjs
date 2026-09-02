@@ -21,25 +21,10 @@ console.log(`2. catalog cards: ${cards > 0 ? "OK (" + cards + ")" : "FAIL"}`);
 
 await page.locator("article a").first().click();
 await page.waitForURL("**/watches/**");
-// Wait for hydration before clicking server-action button
 await page.waitForTimeout(1500);
-const buyBtn = page.getByRole("button", { name: /Buy now/i }).first();
-await buyBtn.waitFor({ state: "visible", timeout: 15000 });
-// Capture which watch we clicked
-const heading = await page.locator("h1").innerText();
-await buyBtn.click();
-// Server action may redirect or error — listen for both
-try {
-  await page.waitForURL("**/checkout/**", { timeout: 25000 });
-  console.log(`3. order created for "${heading.slice(0, 40)}": OK → checkout`);
-} catch {
-  const url = page.url();
-  const err = await page.locator("[role=alert], .text-red-400").first().textContent().catch(() => "n/a");
-  console.log(`3. FAIL — still on ${url}; error shown: ${String(err).slice(0, 80)}`);
-  await page.screenshot({ path: "test-results/live-fail.png", fullPage: true });
-  await browser.close();
-  process.exit(1);
-}
+await page.getByRole("button", { name: /Buy now/i }).first().click();
+await page.waitForURL("**/checkout/**", { timeout: 25000 });
+console.log("3. order created: OK → checkout");
 
 await page.getByLabel("Full name").fill("Live Smoke");
 await page.getByLabel("Address line 1").fill("1 Railway Street");
@@ -53,8 +38,11 @@ await page.getByLabel("CVC").fill("123");
 await page.getByRole("button", { name: /Pay .* & Place Order/i }).click();
 await page.waitForURL("**/orders/**", { timeout: 25000 });
 await page.waitForLoadState("networkidle");
-const secured = await page.getByText("Payment confirmed").count();
-console.log(`4. mock payment + PAYMENT_SECURED: ${secured > 0 ? "OK" : "FAIL"}`);
+
+// PAYMENT SECURED badge (OrderStatusBadge) — text in DOM, case-insensitive scan
+const body = await page.locator("body").innerText();
+const ok = /payment secured/i.test(body) && /mock · succeeded|mock · SUCCEEDED/i.test(body);
+console.log(`4. mock payment + PAYMENT_SECURED: ${ok ? "OK" : "FAIL"}`);
 
 console.log(`5. server errors: ${errs.length === 0 ? "none" : errs.slice(0, 3).join(" | ")}`);
 await page.screenshot({ path: "test-results/live-order.png" });
