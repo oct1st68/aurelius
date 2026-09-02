@@ -1,0 +1,601 @@
+@import "tailwindcss";
+
+/*
+ * AURELIUS — single source of truth.
+ * Concept: Dark Gothic / Medieval Editorial (private institution).
+ * Canonical palette values live ONLY here (@theme). Legacy marketplace names
+ * (obsidian, travertine, gold…) are aliases mapped onto the canonical set so
+ * every page shares the same blacks, bone, ash and bronze.
+ */
+
+@theme {
+  /* ── Canonical gothic palette ─────────────────────────────────────── */
+  --color-void: #070706;
+  --color-coal: #0d0c0b;
+  --color-charcoal: #171411;
+  --color-bone: #e7ded0;
+  --color-parchment: #d8cdb8;
+  --color-ash: #8e877d;
+  --color-ox-bronze: #756047;
+  --color-antique-gold: #a88d58;
+  --color-oxblood: #451419;
+  --color-deep-wine: #2e0e12;
+  --color-forest-black: #18211c;
+
+  /* ── Legacy aliases → canonical values ────────────────────────────── */
+  --color-obsidian: #070706;
+  --color-obsidian-2: #0d0c0b;
+  --color-obsidian-3: #171411;
+  --color-travertine: #e7ded0;
+  --color-travertine-2: #d8cdb8;
+  --color-gold: #a88d58;
+  --color-gold-soft: #b9a26e;
+  --color-burgundy: #451419;
+  --color-bronze: #756047;
+  --color-ivory: #e7ded0;
+  --color-ink: #1c1712;
+  --color-limestone: #d8cdb8;
+  --color-stone: #8e877d;
+  --color-forest: #18211c;
+  --color-success: #2f6b46;
+  --color-warning: #9a6d1f;
+  --color-danger: #8f2d38;
+
+  /* ── Type ─────────────────────────────────────────────────────────── */
+  --font-display: "Cinzel Variable", "Times New Roman", serif;
+  --font-serif: "EB Garamond Variable", Georgia, serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --tracking-imperial: 0.14em;
+
+  /* ── Lines ────────────────────────────────────────────────────────── */
+  --line-dark: rgba(117, 96, 71, 0.28);
+  --line-soft: rgba(117, 96, 71, 0.14);
+  --line-strong: rgba(117, 96, 71, 0.55);
+  --line-parchment: rgba(28, 23, 18, 0.2);
+
+  /* ── Shadows ──────────────────────────────────────────────────────── */
+  --shadow-artifact: 0 28px 60px rgba(0, 0, 0, 0.55);
+  --shadow-product: 0 24px 48px rgba(0, 0, 0, 0.45);
+
+  /* ── Motion tokens ────────────────────────────────────────────────── */
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-ceremony: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-fade-in: fade-in 0.6s var(--ease-editorial) both;
+  --animate-fade-up: fade-up 0.8s var(--ease-editorial) both;
+  --animate-emerge: emerge 1.1s var(--ease-editorial) both;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes emerge {
+    from {
+      opacity: 0;
+      transform: scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--color-void);
+}
+
+body {
+  min-width: 320px;
+  background: var(--color-void);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Candlelit grain — fixed, non-interactive, near-invisible */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+
+::selection {
+  background: var(--color-antique-gold);
+  color: var(--color-void);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-antique-gold);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+h1,
+h2,
+h3,
+.editorial-title,
+.display-title {
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .nav-link::after,
+  .taste-link::after {
+    transition: none;
+    transform: none;
+  }
+
+  .reveal-stagger > *,
+  .emerge-on-load,
+  .page-enter,
+  .scroll-emerge {
+    animation: none !important;
+  }
+}
+
+/* ── Typography ───────────────────────────────────────────────────────── */
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-serif-lux {
+  font-family: var(--font-serif);
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-imperial);
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--color-ash);
+}
+
+.antique-gold-i {
+  font-style: italic;
+  color: var(--color-antique-gold);
+}
+
+/* ── Rules & hairlines ────────────────────────────────────────────────── */
+
+.hairline {
+  border-color: var(--line-dark);
+}
+
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(168, 141, 88, 0.4),
+    transparent
+  );
+}
+
+.paper-rule {
+  height: 1px;
+  background: var(--line-soft);
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────── */
+
+.btn-imperial {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 1.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 1px;
+  background: transparent;
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition:
+    background-color 180ms var(--ease-editorial),
+    border-color 180ms var(--ease-editorial),
+    color 180ms var(--ease-editorial),
+    transform 180ms var(--ease-editorial);
+  cursor: pointer;
+}
+
+.btn-imperial:hover:not(:disabled) {
+  border-color: var(--color-antique-gold);
+  color: var(--color-antique-gold);
+  transform: translateY(-1px);
+}
+
+.btn-imperial:active:not(:disabled) {
+  transform: translateY(0) scale(0.985);
+}
+
+.btn-imperial:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+/* Primary ceremonial action — oxblood (commitment / private acquisition) */
+.btn-solid {
+  border-color: var(--color-oxblood);
+  background: var(--color-oxblood);
+  color: var(--color-bone);
+}
+
+.btn-solid:hover:not(:disabled) {
+  border-color: var(--color-deep-wine);
+  background: var(--color-deep-wine);
+  color: var(--color-bone);
+}
+
+.btn-burgundy {
+  border-color: var(--color-oxblood);
+  background: var(--color-oxblood);
+  color: var(--color-bone);
+}
+
+.btn-burgundy:hover:not(:disabled) {
+  border-color: var(--color-deep-wine);
+  background: var(--color-deep-wine);
+  color: var(--color-bone);
+}
+
+.btn-ghost {
+  border-color: rgba(231, 222, 208, 0.28);
+  color: var(--color-bone);
+}
+
+/* ── Forms ────────────────────────────────────────────────────────────── */
+
+.input-imperial {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 0.875rem;
+  border: 1px solid var(--line-dark);
+  border-radius: 1px;
+  background: rgba(23, 20, 17, 0.6);
+  color: var(--color-bone);
+  font-size: 16px; /* ≥16px prevents iOS focus zoom */
+  transition:
+    border-color 150ms var(--ease-editorial),
+    background-color 150ms var(--ease-editorial);
+}
+
+.input-imperial::placeholder {
+  color: rgba(142, 135, 125, 0.72);
+}
+
+.input-imperial:focus {
+  border-color: var(--color-antique-gold);
+  background-color: rgba(168, 141, 88, 0.05);
+  outline: none;
+}
+
+.input-imperial:focus-visible {
+  outline: 2px solid var(--color-antique-gold);
+  outline-offset: 2px;
+}
+
+.label-imperial {
+  display: block;
+  margin-bottom: 0.4375rem;
+  color: var(--color-ash);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ── Panels ───────────────────────────────────────────────────────────── */
+
+.panel {
+  border: 1px solid var(--line-dark);
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--color-charcoal) 55%, transparent);
+}
+
+.panel-hover {
+  transition:
+    border-color 220ms var(--ease-editorial),
+    transform 220ms var(--ease-editorial),
+    box-shadow 220ms var(--ease-editorial);
+}
+
+.panel-hover:hover {
+  border-color: var(--line-strong);
+}
+
+/* ── Lot cards ────────────────────────────────────────────────────────── */
+
+.lot-card {
+  position: relative;
+  min-width: 0;
+}
+
+.lot-image {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-charcoal);
+}
+
+.lot-image img {
+  transition: transform 520ms var(--ease-editorial);
+}
+
+.lot-card:hover .lot-image img,
+.lot-card:focus-within .lot-image img {
+  transform: scale(1.025);
+}
+
+.lot-actions {
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 200ms var(--ease-editorial),
+    transform 200ms var(--ease-editorial);
+}
+
+.lot-card:hover .lot-actions,
+.lot-card:focus-within .lot-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Badges ───────────────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--line-dark);
+  border-radius: 1px;
+  color: var(--color-ash);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.badge-ok {
+  border-color: rgba(47, 107, 70, 0.5);
+  color: #7fa389;
+}
+
+.badge-warn {
+  border-color: rgba(154, 109, 31, 0.5);
+  color: #c3a05a;
+}
+
+.badge-bad {
+  border-color: rgba(143, 45, 56, 0.55);
+  color: #c08494;
+}
+
+/* ── Tables ───────────────────────────────────────────────────────────── */
+
+.table-imperial {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table-imperial th {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line-dark);
+  color: var(--color-ash);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.table-imperial td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: middle;
+}
+
+/* ── Layout shells ────────────────────────────────────────────────────── */
+
+.museum-shell {
+  width: min(100% - 2rem, 90rem);
+  margin-inline: auto;
+}
+
+/* Dark institutional page surface — one entrance, content never hidden */
+.museum-page {
+  min-height: 100%;
+  padding: clamp(2.5rem, 5vw, 4.5rem) max(1rem, calc((100vw - 90rem) / 2));
+  background: var(--color-coal);
+  color: var(--color-bone);
+  animation: var(--animate-fade-in);
+}
+
+.section-space {
+  padding-block: clamp(3rem, 7vw, 7rem);
+}
+
+.editorial-title {
+  max-width: 14ch;
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 5vw, 5.5rem);
+  font-weight: 500;
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+}
+
+.display-title {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 9vw, 8.25rem);
+  font-weight: 500;
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+}
+
+/* ── Motion utilities (signature moments) ─────────────────────────────── */
+
+/* Page-level entrance (applied on .museum-page above) */
+
+.emerge-on-load {
+  animation: var(--animate-emerge);
+}
+
+/* Staggered children reveal — pure CSS, capped at 12 children */
+.reveal-stagger > * {
+  animation: var(--animate-fade-up);
+}
+
+.reveal-stagger > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+.reveal-stagger > *:nth-child(2) {
+  animation-delay: 90ms;
+}
+.reveal-stagger > *:nth-child(3) {
+  animation-delay: 180ms;
+}
+.reveal-stagger > *:nth-child(4) {
+  animation-delay: 270ms;
+}
+.reveal-stagger > *:nth-child(5) {
+  animation-delay: 360ms;
+}
+.reveal-stagger > *:nth-child(6) {
+  animation-delay: 450ms;
+}
+.reveal-stagger > *:nth-child(7) {
+  animation-delay: 540ms;
+}
+.reveal-stagger > *:nth-child(8) {
+  animation-delay: 630ms;
+}
+.reveal-stagger > *:nth-child(9) {
+  animation-delay: 720ms;
+}
+.reveal-stagger > *:nth-child(10) {
+  animation-delay: 810ms;
+}
+.reveal-stagger > *:nth-child(11) {
+  animation-delay: 900ms;
+}
+.reveal-stagger > *:nth-child(12) {
+  animation-delay: 990ms;
+}
+
+/* Scroll-emergent numeral — progressive enhancement (no JS, no fallback cost) */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-emerge {
+      animation: scroll-emerge linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 42%;
+    }
+
+    @keyframes scroll-emerge {
+      from {
+        opacity: 0.15;
+        transform: translateY(6%) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+}
+
+/* ── Editorial link grammar ───────────────────────────────────────────── */
+
+.nav-link,
+.taste-link {
+  position: relative;
+}
+
+.nav-link::after,
+.taste-link::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 6px;
+  height: 1px;
+  background: var(--color-antique-gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 240ms var(--ease-editorial);
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after,
+.taste-link:hover::after,
+.taste-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+footer .taste-link::after {
+  left: 0;
+  right: auto;
+  width: 100%;
+}
+
+/* ── Mobile ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .lot-actions {
+    opacity: 1;
+    transform: none;
+  }
+
+  .museum-shell {
+    width: min(100% - 1.25rem, 90rem);
+  }
+
+  .section-space {
+    padding-block: 3rem;
+  }
+}

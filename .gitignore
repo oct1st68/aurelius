@@ -1,0 +1,30 @@
+# node_modules
+node_modules/
+.pnpm-store/
+.next/
+out/
+build/
+
+# test artifacts
+test-results/
+playwright-report/
+coverage/
+
+# local persistence (regenerate with `pnpm data`)
+/data/local/*.json
+/storage/local/*
+!/storage/local/.gitkeep
+!/storage/local/photos/
+!/storage/local/photos/**
+
+# secrets
+.env
+.env.local
+.env.*.local
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+*.tsbuildinfo
+next-env.d.ts
