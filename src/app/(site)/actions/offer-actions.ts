@@ -19,8 +19,6 @@ export interface OfferActionState {
   message?: string;
 }
 
-const INITIAL: OfferActionState = {};
-
 function fail(error: unknown): OfferActionState {
   return { error: toUserMessage(error) };
 }
@@ -108,4 +106,3 @@ export async function buyerOfferAction(
   }
 }
 
-export { INITIAL as INITIAL_OFFER_STATE };
