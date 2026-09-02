@@ -225,14 +225,12 @@ async function writeMedia(relPath: string, svg: string): Promise<void> {
 // Main
 // ---------------------------------------------------------------------------
 
-async function main(): Promise<void> {
-  const force = process.argv.includes("--force");
-
-  // Deploy-safe default: seed only an empty register. `pnpm data` passes --force to reset.
+export async function runSeed(force = false): Promise<void> {
+  // Seed only when the register has no catalog. `pnpm data` passes --force to reset.
   if (!force) {
-    const usersFile = path.join(DATA_DIR, "users.json");
+    const listingsFile = path.join(DATA_DIR, "listings.json");
     try {
-      const existing = JSON.parse(await (await import("node:fs/promises")).readFile(usersFile, "utf8")) as unknown[];
+      const existing = JSON.parse(await (await import("node:fs/promises")).readFile(listingsFile, "utf8")) as unknown[];
       if (Array.isArray(existing) && existing.length > 0) {
         console.log("Register already populated — skipping seed (use `pnpm data` to reset).");
         return;
@@ -822,7 +820,9 @@ async function main(): Promise<void> {
   console.log("All inventory, prices and market data are SIMULATED demo data.");
 }
 
-main().catch((error) => {
-  console.error("Seed failed:", error);
-  process.exit(1);
-});
+if (process.argv[1]?.replace(/\\/g, "/").includes("seed")) {
+  runSeed(process.argv.includes("--force")).catch((error) => {
+    console.error("Seed failed:", error);
+    process.exit(1);
+  });
+}
